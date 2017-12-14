@@ -13,7 +13,7 @@ client.connect();
 exports.register = (userData) => {
     return new Promise((resolve, reject) => {
         let sql = `INSERT INTO ${TABLE} (username, password, create_time) VALUES (?, ?, ?)`;
-        let params = [`${userData.username}`, `${userData.password}`, +new Date()];
+        let params = [userData.username, userData.password, +new Date()];
         client.query(sql, params, function (err, res) {
             if (err) {
                 reject(err);

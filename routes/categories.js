@@ -62,9 +62,13 @@ router.get('/categories', async(ctx, next) => {
     }, err => {
         ctx.status = 500;
     }).then(res => {
+        let totalNum = 0;
+        if (!!res) {
+            totalNum = res[0]['COUNT(*)'];
+        }
         ctx.body = {
             list: data,
-            totalNum: res[0]['COUNT(*)']
+            totalNum: totalNum
         }
     }, err => {
         ctx.status = 500;

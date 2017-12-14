@@ -38,7 +38,7 @@ exports.getCategories = (offset = 0, size = 100) => {
 exports.addCategories = (categoriesName) => {
     return new Promise((resolve, reject) => {
         let sql = `INSERT INTO ${DATABASE}.${TABLE} (name, create_time, enabled) VALUES (?, ?, ?);`;
-        let params = [`${categoriesName}`, +new Date(), 1];
+        let params = [categoriesName, +new Date(), 1];
         client.query(sql, params, function (err, res) {
             if (err) {
                 reject(err);
