@@ -23,7 +23,7 @@ var upload = multer({
 router.post('/upload', upload.single('file'), async(ctx, next) => {
     // router.post('/upload', upload.array('file',5), async(ctx, next) => {
     ctx.body = {
-        filename: ctx.req.file //返回文件名  
+        fileData: ctx.req.file //返回文件名  
     }
 })
 
