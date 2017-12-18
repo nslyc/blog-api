@@ -60,8 +60,8 @@ exports.getTotalArticlesNumByCategoriesId = (categoriesId) => {
 // 新增文章
 exports.addArticles = (articlesData) => {
     return new Promise((resolve, reject) => {
-        let sql = `INSERT INTO ${DATABASE}.${TABLE} (title, type, author, content, create_time, categories_id) VALUES (?, ?, ?, ?, ?, ?)`;
-        let params = [articlesData.title, articlesData.type, articlesData.author, articlesData.content, +new Date(), articlesData.categoriesId];
+        let sql = `INSERT INTO ${DATABASE}.${TABLE} (title, type, author, content, description, create_time, categories_id) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+        let params = [articlesData.title, articlesData.type, articlesData.author, articlesData.content, articlesData.description, +new Date(), articlesData.categoriesId];
         client.query(sql, params, function (err, res) {
             if (err) {
                 reject(err);
@@ -85,7 +85,7 @@ exports.deleteArticles = (id) => {
 // 修改文章
 exports.modifyArticles = (articlesData) => {
     return new Promise((resolve, reject) => {
-        let sql = `UPDATE ${DATABASE}.${TABLE} SET title='${articlesData.title}', type='${articlesData.type}', author='${articlesData.author}', content='${articlesData.content}',modify_time=${+new Date()},categories_id=${articlesData.categoriesId} WHERE  id=${articlesData.id};`;
+        let sql = `UPDATE ${DATABASE}.${TABLE} SET title='${articlesData.title}', type='${articlesData.type}', author='${articlesData.author}', content='${articlesData.content}', description='${articlesData.description}',modify_time=${+new Date()},categories_id=${articlesData.categoriesId} WHERE  id=${articlesData.id};`;
         client.query(sql, function (err, res) {
             if (err) {
                 reject(err);

@@ -35,7 +35,6 @@ router.post('/register', async(ctx, next) => {
             id: res.insertId
         };
         ctx.status = 200;
-
     }, err => {
         // 用户名重复
         if (err.code === 'ER_DUP_ENTRY') {
@@ -47,26 +46,40 @@ router.post('/register', async(ctx, next) => {
     })
 })
 // 修改密码
-router.post('/modifyPassword', async(ctx, next) => {
+router.post('/modifyPassword/:id', async(ctx, next) => {
+    let id = ctx.params.id;
     let info = ctx.request.body;
-    await userSign.getUserId(info.username).then(res => {
-        if (!!res[0] && !!res[0]['id']) {
-            let id = res[0].id;
-            return userSign.modifyPassword({
-                id: id,
-                ...info
-            });
-        } else {
-            ctx.body = 'UserUndefined';
-            ctx.status = 406;
-        }
+    await userSign.modifyPassword({
+        id: id,
+        password: info.password
+    }).then(res => {
+        ctx.body = 'OK';
+    }, err => {
+        ctx.body = 'ModifyError';
+        ctx.status = 415;
+    })
+})
+// 获取用户列表
+router.get('/userList', async(ctx, next) => {
+    let headers = ctx.request.headers;
+    let data;
+    await userSign.getUserList(headers.offset, headers.size).then(res => {
+        data = res;
+        return userSign.getTotalUserNum();
     }, err => {
         ctx.body = 'UnknowError';
         ctx.status = 415;
     }).then(res => {
-        ctx.status = 200;
+        let totalNum = 0;
+        if (!!res) {
+            totalNum = res[0]['COUNT(*)'];
+        }
+        ctx.body = {
+            list: data,
+            totalNum: totalNum
+        }
     }, err => {
-        ctx.body = 'ModifyError';
+        ctx.body = 'UnknowError';
         ctx.status = 415;
     })
 })
