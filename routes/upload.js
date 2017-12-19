@@ -1,6 +1,7 @@
 const multer = require('koa-multer'); //加载koa-multer模块  
 const router = require('koa-router')()
 const fs = require('fs')
+const imagesData = require('../sql/images-data')
 router.prefix('/api')
 
 //配置  
@@ -19,12 +20,29 @@ var storage = multer.diskStorage({
 var upload = multer({
     storage: storage
 });
-//路由  
-router.post('/upload', upload.single('file'), async(ctx, next) => {
-    // router.post('/upload', upload.array('file',5), async(ctx, next) => {
-    ctx.body = {
-        fileData: ctx.req.file //返回文件名  
-    }
+// // 不分类上传  
+// router.post('/upload', upload.single('file'), async(ctx, next) => {
+//     // router.post('/upload', upload.array('file',5), async(ctx, next) => {
+//     ctx.body = {
+//         fileData: ctx.req.file //返回文件名  
+//     }
+// })
+// 分类上传
+router.post('/upload/:categoriesId', upload.single('file'), async(ctx, next) => {
+    let info = ctx.request.headers;
+    let categoriesId = ctx.params.categoriesId;
+    await imagesData.addImages({
+        path: `uploads/${ctx.req.file.filename}`,
+        description: info['description'],
+        categoriesId: categoriesId
+    }).then(res => {
+        console.log(res);
+        ctx.body = {
+            fileData: ctx.req.file //返回文件名  
+        }
+    }, err => {
+        console.log(err);
+    })
 })
 
 module.exports = router

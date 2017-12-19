@@ -5,10 +5,10 @@ const json = require('koa-json')
 const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
-const cors = require('koa-cors')
+const cors = require('koa-cors') // 允许跨域
 
-const routes = require('./routes/config')
-const verifyToken = require('./middleware/verify-token')
+const routes = require('./routes/config') // 路由
+const verifyToken = require('./middleware/verify-token') // token验证
 
 // error handler
 onerror(app)
@@ -38,8 +38,11 @@ app.use(async(ctx, next) => {
 // routes
 app.use(routes.login.routes(), routes.login.allowedMethods())
 app.use(routes.upload.routes(), routes.upload.allowedMethods())
-app.use(routes.categories.routes(), routes.categories.allowedMethods())
 app.use(routes.articles.routes(), routes.articles.allowedMethods())
+app.use(routes.images.routes(), routes.images.allowedMethods())
+app.use(routes.reviews.routes(), routes.reviews.allowedMethods())
+app.use(routes.articlesCategories.routes(), routes.articlesCategories.allowedMethods())
+app.use(routes.imagesCategories.routes(), routes.imagesCategories.allowedMethods())
 
 // error-handling
 app.on('error', (err, ctx) => {

@@ -74,7 +74,7 @@ exports.modifyPassword = (userData) => {
 // 获取用户列表
 exports.getUserList = (offset = 0, size = 100) => {
     return new Promise((resolve, reject) => {
-        let sql = `SELECT id, username, comment, create_time FROM ${DATABASE}.${TABLE} limit ${offset},${size}`;
+        let sql = `SELECT id, username, comment, create_time FROM ${DATABASE}.${TABLE} ORDER BY create_time DESC limit ${offset},${size}`;
         client.query(sql, (err, res, fields) => {
             if (err) {
                 reject(err);

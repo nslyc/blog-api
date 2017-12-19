@@ -1,14 +1,14 @@
 const router = require('koa-router')()
-const articlesData = require('../sql/articles-data')
+const imagesData = require('../sql/images-data')
 
 router.prefix('/api')
-// 获取文章列表
-router.get('/articles', async(ctx, next) => {
+// 获取图片列表
+router.get('/images', async(ctx, next) => {
     let headers = ctx.request.headers;
     let data;
-    await articlesData.getArticlesList(headers.offset, headers.size).then(res => {
+    await imagesData.getImagesList(headers.offset, headers.size).then(res => {
         data = res;
-        return articlesData.getTotalArticlesNum();
+        return imagesData.getTotalImagesNum();
     }, err => {
         ctx.status = 500;
     }).then(res => {
@@ -24,14 +24,14 @@ router.get('/articles', async(ctx, next) => {
         ctx.status = 500;
     })
 })
-// 获取分类下的文章列表
-router.get('/articles/categories/:categoriesId', async(ctx, next) => {
+// 获取分类下的图片列表
+router.get('/images/categories/:categoriesId', async(ctx, next) => {
     let categoriesId = ctx.params.categoriesId;
     let headers = ctx.request.headers;
     let data;
-    await articlesData.getArticlesListByCategoriesId(categoriesId, headers.offset, headers.size).then(res => {
+    await imagesData.getImagesListByCategoriesId(categoriesId, headers.offset, headers.size).then(res => {
         data = res;
-        return articlesData.getTotalArticlesNumByCategoriesId(categoriesId);
+        return imagesData.getTotalImagesNumByCategoriesId(categoriesId);
     }, err => {
         ctx.status = 500;
         console.log(err);
@@ -49,10 +49,10 @@ router.get('/articles/categories/:categoriesId', async(ctx, next) => {
         console.log(err);
     })
 })
-// 新增文章
-router.post('/articles', async(ctx, next) => {
+// 新增图片
+router.post('/images', async(ctx, next) => {
     let info = ctx.request.body;
-    await articlesData.addArticles(info).then(res => {
+    await imagesData.addImages(info).then(res => {
         ctx.body = {
             id: res['insertId']
         }
@@ -68,10 +68,10 @@ router.post('/articles', async(ctx, next) => {
         ctx.status = 415;
     })
 })
-// 删除文章
-router.delete('/articles/:id', async(ctx, next) => {
+// 删除图片
+router.delete('/images/:id', async(ctx, next) => {
     let id = ctx.params.id;
-    await articlesData.deleteArticles(id).then(res => {
+    await imagesData.deleteImages(id).then(res => {
         if (res['changedRows'] === 1) {
             ctx.status = 200;
         } else {
@@ -81,13 +81,11 @@ router.delete('/articles/:id', async(ctx, next) => {
         ctx.status = 500;
     })
 })
-// 修改文章
-router.post('/articles/:id', async(ctx, next) => {
+// 修改图片
+router.post('/images/:id', async(ctx, next) => {
     let id = ctx.params.id;
     let info = ctx.request.body;
-    await articlesData.modifyArticles({ ...info,
-        id: id
-    }).then(res => {
+    await imagesData.modifyImages(id, info['categoriesId'], info['description']).then(res => {
         if (res['changedRows'] === 1) {
             ctx.status = 200;
         } else {
@@ -98,14 +96,4 @@ router.post('/articles/:id', async(ctx, next) => {
         console.log(err);
     })
 })
-// 查找文章
-router.get('/articles/:id', async(ctx, next) => {
-    let id = ctx.params.id;
-    await articlesData.queryArticles(id).then(res => {
-        ctx.body = res;
-    }, err => {
-        ctx.status = 500;
-    })
-})
-
 module.exports = router

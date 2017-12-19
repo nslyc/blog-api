@@ -1,6 +1,9 @@
 module.exports = {
     login: require('./login'),
     upload: require('./upload'),
-    categories: require('./categories'),
-    articles: require('./articles')
+    articles: require('./articles'),
+    images: require('./images'),
+    reviews: require('./reviews'),
+    articlesCategories: require('./articles-categories'),
+    imagesCategories: require('./images-categories'),
 }
