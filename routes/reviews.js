@@ -11,7 +11,7 @@ router.get('/reviews/articles/:articlesId', async(ctx, next) => {
         data = res;
         return reviewsData.getTotalReviewsNum(articlesId);
     }, err => {
-        ctx.status = 500;
+        ctx.throw(500, 'UnknowError');
         console.log(err);
     }).then(res => {
         let totalNum = 0;
@@ -23,8 +23,7 @@ router.get('/reviews/articles/:articlesId', async(ctx, next) => {
             totalNum: totalNum
         }
     }, err => {
-        ctx.status = 500;
-        console.log(err);
+        ctx.throw(500, 'UnknowError');
     })
 })
 // 发表评论
@@ -37,13 +36,10 @@ router.post('/reviews', async(ctx, next) => {
     }, err => {
         // 用户名重复
         if (err.code === 'ER_DUP_ENTRY') {
-            ctx.status = 406;
-            ctx.message = 'IsCreated';
+            ctx.throw(406, 'IsCreated');
             return;
         }
-        console.log(err);
-        ctx.body = 'CreateError';
-        ctx.status = 415;
+        ctx.throw(500, 'UnknowError');
     })
 })
 // 删除评论
@@ -51,12 +47,14 @@ router.delete('/reviews/:id', async(ctx, next) => {
     let id = ctx.params.id;
     await reviewsData.deleteReviews(id).then(res => {
         if (res['changedRows'] === 1) {
-            ctx.status = 200;
+            ctx.body = {
+                message: 'OK'
+            };
         } else {
-            ctx.body = 'DeleteError';
+            ctx.throw(406, 'DeleteError');
         }
     }, err => {
-        ctx.status = 500;
+        ctx.throw(500, 'UnknowError');
     })
 })
 module.exports = router

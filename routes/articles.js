@@ -10,7 +10,7 @@ router.get('/articles', async(ctx, next) => {
         data = res;
         return articlesData.getTotalArticlesNum();
     }, err => {
-        ctx.status = 500;
+        ctx.throw(500, 'UnknowError');
     }).then(res => {
         let totalNum = 0;
         if (!!res) {
@@ -21,7 +21,7 @@ router.get('/articles', async(ctx, next) => {
             totalNum: totalNum
         }
     }, err => {
-        ctx.status = 500;
+        ctx.throw(500, 'UnknowError');
     })
 })
 // 获取分类下的文章列表
@@ -33,7 +33,7 @@ router.get('/articles/categories/:categoriesId', async(ctx, next) => {
         data = res;
         return articlesData.getTotalArticlesNumByCategoriesId(categoriesId);
     }, err => {
-        ctx.status = 500;
+        ctx.throw(500, 'UnknowError');
         console.log(err);
     }).then(res => {
         let totalNum = 0;
@@ -45,7 +45,7 @@ router.get('/articles/categories/:categoriesId', async(ctx, next) => {
             totalNum: totalNum
         }
     }, err => {
-        ctx.status = 500;
+        ctx.throw(500, 'UnknowError');
         console.log(err);
     })
 })
@@ -59,13 +59,10 @@ router.post('/articles', async(ctx, next) => {
     }, err => {
         // 用户名重复
         if (err.code === 'ER_DUP_ENTRY') {
-            ctx.status = 406;
-            ctx.message = 'IsCreated';
+            ctx.throw(406, 'IsCreated');
             return;
         }
-        console.log(err);
-        ctx.body = 'CreateError';
-        ctx.status = 415;
+        ctx.throw(500, 'UnknowError');
     })
 })
 // 删除文章
@@ -73,12 +70,14 @@ router.delete('/articles/:id', async(ctx, next) => {
     let id = ctx.params.id;
     await articlesData.deleteArticles(id).then(res => {
         if (res['changedRows'] === 1) {
-            ctx.status = 200;
+            ctx.body = {
+                message: 'OK'
+            };
         } else {
-            ctx.body = 'DeleteError';
+            ctx.throw(406, 'DeleteError');
         }
     }, err => {
-        ctx.status = 500;
+        ctx.throw(500, 'UnknowError');
     })
 })
 // 修改文章
@@ -89,12 +88,14 @@ router.post('/articles/:id', async(ctx, next) => {
         id: id
     }).then(res => {
         if (res['changedRows'] === 1) {
-            ctx.status = 200;
+            ctx.body = {
+                message: 'OK'
+            };
         } else {
-            ctx.body = 'ModifyError';
+            ctx.throw(406, 'ModifyError');
         }
     }, err => {
-        ctx.status = 500;
+        ctx.throw(500, 'UnknowError');
         console.log(err);
     })
 })
@@ -104,7 +105,7 @@ router.get('/articles/:id', async(ctx, next) => {
     await articlesData.queryArticles(id).then(res => {
         ctx.body = res;
     }, err => {
-        ctx.status = 500;
+        ctx.throw(500, 'UnknowError');
     })
 })
 

@@ -12,10 +12,9 @@ router.post('/login', async(ctx, next) => {
                 resInfo = res;
                 return jwt.jwtSign(res[0].id);
             }
-            ctx.status = 403;
-            ctx.message = 'LoginErr';
+            ctx.throw(406, 'LoginErr');
         }, err => {
-            ctx.status = 500;
+            ctx.throw(500, 'UnknowError');
         })
         .then(token => {
             if (!!resInfo && !!resInfo[0]) {
@@ -24,7 +23,7 @@ router.post('/login', async(ctx, next) => {
                 };
             }
         }, err => {
-            ctx.status = 500;
+            ctx.throw(500, 'UnknowError');
         })
 })
 // 注册
@@ -34,30 +33,42 @@ router.post('/register', async(ctx, next) => {
         ctx.body = {
             id: res.insertId
         };
-        ctx.status = 200;
     }, err => {
         // 用户名重复
         if (err.code === 'ER_DUP_ENTRY') {
-            ctx.message = 'IsRegisted';
+            ctx.throw(406, 'IsRegisted');
             return;
         }
-        ctx.body = 'RegisterError';
-        ctx.status = 415;
+        ctx.throw(500, 'UnknowError');
     })
 })
 // 修改密码
 router.post('/modifyPassword/:id', async(ctx, next) => {
     let id = ctx.params.id;
     let info = ctx.request.body;
-    await userSign.modifyPassword({
-        id: id,
-        password: info.password
-    }).then(res => {
-        ctx.body = 'OK';
-    }, err => {
-        ctx.body = 'ModifyError';
-        ctx.status = 415;
-    })
+    await userSign.verifyPassword({
+            id: id,
+            password: info.password
+        }).then(res => {
+            if (res.length !== 0) {
+                resInfo = res;
+                return userSign.modifyPassword({
+                    id: id,
+                    password: info.newPassword
+                });
+            }
+            ctx.throw(401, 'VerifyErr');
+            return;
+        }, err => {
+            ctx.throw(500, 'UnknowError');
+        })
+        .then(res => {
+            ctx.body = {
+                message: "OK"
+            }
+        }, err => {
+            ctx.throw(500, 'UnknowError');
+        })
 })
 // 获取用户列表
 router.get('/userList', async(ctx, next) => {
@@ -67,8 +78,7 @@ router.get('/userList', async(ctx, next) => {
         data = res;
         return userSign.getTotalUserNum();
     }, err => {
-        ctx.body = 'UnknowError';
-        ctx.status = 415;
+        ctx.throw(500, 'UnknowError');
     }).then(res => {
         let totalNum = 0;
         if (!!res) {
@@ -79,8 +89,7 @@ router.get('/userList', async(ctx, next) => {
             totalNum: totalNum
         }
     }, err => {
-        ctx.body = 'UnknowError';
-        ctx.status = 415;
+        ctx.throw(500, 'UnknowError');
     })
 })
 module.exports = router

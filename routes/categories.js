@@ -19,12 +19,10 @@ module.exports = class CategoriesRouter {
             }, err => {
                 // 用户名重复
                 if (err.code === 'ER_DUP_ENTRY') {
-                    ctx.status = 406;
-                    ctx.message = 'IsCreated';
+                    ctx.throw(406, 'IsCreated');
                     return;
                 }
-                ctx.body = 'CreateError';
-                ctx.status = 415;
+                ctx.throw(500, 'UnknowError');
             })
         })
         // 删除分类(禁用)
@@ -32,12 +30,14 @@ module.exports = class CategoriesRouter {
             let id = ctx.params.id;
             await this.categories.disableCategories(id).then(res => {
                 if (res['changedRows'] === 1) {
-                    ctx.status = 200;
+                    ctx.body = {
+                        message: 'OK'
+                    };
                 } else {
-                    ctx.body = 'DeleteError';
+                    ctx.throw(406, 'DeleteError');
                 }
             }, err => {
-                ctx.status = 500;
+                ctx.throw(500, 'UnknowError');
             })
         })
         // 修改分类
@@ -46,12 +46,14 @@ module.exports = class CategoriesRouter {
             let name = ctx.request.body['name'];
             await this.categories.modifyCategories(id, name).then(res => {
                 if (res['changedRows'] === 1) {
-                    ctx.status = 200;
+                    ctx.body = {
+                        message: 'OK'
+                    };
                 } else {
-                    ctx.body = 'ModifyError';
+                    ctx.throw(406, 'ModifyError');
                 }
             }, err => {
-                ctx.status = 500;
+                ctx.throw(500, 'UnknowError');
             })
         })
         // 查找分类
@@ -66,8 +68,7 @@ module.exports = class CategoriesRouter {
                 data = res;
                 return this.categories.getTotalCategoriesNum();
             }, err => {
-                console.log(err);
-                ctx.status = 500;
+                ctx.throw(500, 'UnknowError');
             }).then(res => {
                 let totalNum = 0;
                 if (!!res) {
@@ -78,7 +79,7 @@ module.exports = class CategoriesRouter {
                     totalNum: totalNum
                 }
             }, err => {
-                ctx.status = 500;
+                ctx.throw(500, 'UnknowError');
             })
         })
     }

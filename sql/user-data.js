@@ -59,6 +59,18 @@ exports.getUsername = (userId) => {
         });
     })
 }
+// 验证密码
+exports.verifyPassword = (userData) => {
+    return new Promise((resolve, reject) => {
+        let sql = `SELECT * FROM ${TABLE} WHERE id = ${userData.id} AND password = '${userData.password}'`;
+        client.query(sql, (err, res, fields) => {
+            if (err) {
+                reject(err);
+            }
+            resolve(res);
+        });
+    })
+}
 // 修改密码
 exports.modifyPassword = (userData) => {
     return new Promise((resolve, reject) => {

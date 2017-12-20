@@ -41,7 +41,7 @@ router.post('/upload/:categoriesId', upload.single('file'), async(ctx, next) => 
             fileData: ctx.req.file //返回文件名  
         }
     }, err => {
-        console.log(err);
+        ctx.throw(500, 'UnknowError');
     })
 })
 

@@ -49,5 +49,5 @@ app.on('error', (err, ctx) => {
     console.error('server error', err, ctx)
 });
 
-console.log('开始了~~~')
+console.log('Server starts successfully!')
 module.exports = app
