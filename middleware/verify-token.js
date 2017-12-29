@@ -3,8 +3,7 @@ const jwt = require('./jwt')
 module.exports = () => {
     return async(ctx, next) => {
         let url = ctx.url;
-        console.log(url);
-        if (url === '/api/upload') {
+        if (url.match(/\/api\/upload/)) {
             let token = ctx.header.authorization;
             if (!token) {
                 ctx.body = 'Unauthorized';

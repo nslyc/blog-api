@@ -62,6 +62,7 @@ router.post('/articles', async(ctx, next) => {
             ctx.throw(406, 'IsCreated');
             return;
         }
+        console.log(err);
         ctx.throw(500, 'UnknowError');
     })
 })

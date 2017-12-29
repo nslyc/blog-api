@@ -21,12 +21,20 @@ var upload = multer({
     storage: storage
 });
 // // 不分类上传  
-// router.post('/upload', upload.single('file'), async(ctx, next) => {
-//     // router.post('/upload', upload.array('file',5), async(ctx, next) => {
-//     ctx.body = {
-//         fileData: ctx.req.file //返回文件名  
-//     }
-// })
+router.post('/upload', upload.single('file'), async(ctx, next) => {
+    // router.post('/upload', upload.array('file',5), async(ctx, next) => {
+    await imagesData.addImages({
+        path: `uploads/${ctx.req.file.filename}`,
+        description: '富文本编辑器上传图片',
+        categoriesId: 0
+    }).then(res => {
+        ctx.body = {
+            link: `${ctx.protocol}://${ctx.host}/uploads/${ctx.req.file.filename}`
+        }
+    }, err => {
+        ctx.throw(500, 'UnknowError');
+    })
+})
 // 分类上传
 router.post('/upload/:categoriesId', upload.single('file'), async(ctx, next) => {
     let info = ctx.request.headers;
@@ -36,7 +44,6 @@ router.post('/upload/:categoriesId', upload.single('file'), async(ctx, next) => 
         description: info['description'],
         categoriesId: categoriesId
     }).then(res => {
-        console.log(res);
         ctx.body = {
             fileData: ctx.req.file //返回文件名  
         }
