@@ -34,11 +34,11 @@ router.post('/reviews', async(ctx, next) => {
             id: res['insertId']
         }
     }, err => {
-        // 用户名重复
-        if (err.code === 'ER_DUP_ENTRY') {
-            ctx.throw(406, 'IsCreated');
-            return;
-        }
+        // // 用户名重复
+        // if (err.code === 'ER_DUP_ENTRY') {
+        //     ctx.throw(406, 'IsCreated');
+        //     return;
+        // }
         ctx.throw(500, 'UnknowError');
     })
 })
