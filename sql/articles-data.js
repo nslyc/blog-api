@@ -60,9 +60,10 @@ exports.getTotalArticlesNumByCategoriesId = (categoriesId) => {
 // 新增文章
 exports.addArticles = (articlesData) => {
     return new Promise((resolve, reject) => {
-        let sql = `INSERT INTO ${DATABASE}.${TABLE} (title, author, content, description, create_time, categories_id) VALUES (?, ?, ?, ?, ?, ?)`;
+        let sql = `INSERT INTO ${DATABASE}.${TABLE} (title, author, content, description, cover, create_time, categories_id) VALUES (?, ?, ?, ?, ?, ?)`;
         let description = articlesData.description || '';
-        let params = [articlesData.title, articlesData.author, articlesData.content, description, +new Date(), articlesData.categoriesId];
+        let cover = articlesData.cover || '';
+        let params = [articlesData.title, articlesData.author, articlesData.content, description, cover, +new Date(), articlesData.categoriesId];
         client.query(sql, params, function (err, res) {
             if (err) {
                 reject(err);

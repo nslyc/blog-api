@@ -80,7 +80,7 @@ router.delete('/images/:id', async(ctx, next) => {
         ctx.throw(500, 'UnknowError');
     })
 })
-// 修改图片
+// 修改图片分类和描述
 router.post('/images/:id', async(ctx, next) => {
     let id = ctx.params.id;
     let info = ctx.request.body;

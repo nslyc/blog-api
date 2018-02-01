@@ -10,7 +10,7 @@ module.exports = class CategoriesRouter {
         this.router.prefix(prefix);
         this.categories = categories;
         // 新增分类
-        router.post('/categories', async(ctx, next) => {
+        router.post('/categories', async (ctx, next) => {
             let info = ctx.request.body;
             await this.categories.addCategories(info.name).then(res => {
                 ctx.body = {
@@ -26,7 +26,7 @@ module.exports = class CategoriesRouter {
             })
         })
         // 删除分类(禁用)
-        router.delete('/categories/:id', async(ctx, next) => {
+        router.delete('/categories/:id', async (ctx, next) => {
             let id = ctx.params.id;
             await this.categories.disableCategories(id).then(res => {
                 if (res['changedRows'] === 1) {
@@ -41,7 +41,7 @@ module.exports = class CategoriesRouter {
             })
         })
         // 修改分类
-        router.post('/categories/:id', async(ctx, next) => {
+        router.post('/categories/:id', async (ctx, next) => {
             let id = ctx.params.id;
             let name = ctx.request.body['name'];
             await this.categories.modifyCategories(id, name).then(res => {
@@ -57,11 +57,16 @@ module.exports = class CategoriesRouter {
             })
         })
         // 查找分类
-        router.get('/categories/:id', async(ctx, next) => {
+        router.get('/categories/:id', async (ctx, next) => {
             let id = ctx.params.id;
+            await this.categories.queryCategories(id).then(res => {
+                ctx.body = res;
+            }, err => {
+                ctx.throw(500, 'UnknowError');
+            })
         })
         // 获取分类列表
-        router.get('/categories', async(ctx, next) => {
+        router.get('/categories', async (ctx, next) => {
             let headers = ctx.request.headers;
             let data;
             await this.categories.getCategories(headers.offset, headers.size).then(res => {

@@ -65,4 +65,16 @@ module.exports = class Categories {
             });
         })
     }
+    // 查找分类
+    queryCategories(categoriesId) {
+        return new Promise((resolve, reject) => {
+            let sql = `SELECT * FROM  ${this.DATABASE}.${this.TABLE} WHERE id=${categoriesId};`;
+            this.client.query(sql, function (err, res) {
+                if (err) {
+                    reject(err);
+                }
+                resolve(res);
+            });
+        })
+    }
 }

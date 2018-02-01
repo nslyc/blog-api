@@ -5,7 +5,8 @@
 2. 导入SQL文件，生成数据库
 ## 启动
 下载依赖 ` npm i` ，
-然后启动服务 `npm start`
+然后启动服务 `npm start`,
+接口访问可使用 [POSTMAN](https://www.getpostman.com/app/download/osx64/)
 ## 接口文档
 路由前缀 `/api`
 ### 用户
@@ -74,6 +75,12 @@
     - output：
         - 修改成功： `{message: "OK"}`
         - 分类修改失败： `{error: "ModifyError"}`
+        - 服务器错误： `{error: "UnknowError"}`
+- 指定id的分类
+    - method： `GET`
+    - path： `/article/categories/:id`
+    - output：
+        - 成功： `[...object]`
         - 服务器错误： `{error: "UnknowError"}`
 - 获取分类列表
     - method： `GET`
