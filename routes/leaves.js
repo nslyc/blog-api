@@ -1,14 +1,14 @@
 const router = require('koa-router')()
-const reviewsData = require('../sql/reviews-data')
+const leavesData = require('../sql/leaves-data')
 
 router.prefix('/api')
-// 获取评论列表(获取评论全部信息，post 验证token)
-router.post('/reviews/list', async (ctx, next) => {
+// 获取留言列表(获取评论全部信息，post 验证token)
+router.post('/leaves/list', async (ctx, next) => {
     let headers = ctx.request.headers;
     let data;
-    await reviewsData.getReviewsList(headers.offset, headers.size).then(res => {
+    await leavesData.getLeavesListByAdmin(headers.offset, headers.size).then(res => {
         data = res;
-        return reviewsData.getTotalReviewsNum();
+        return leavesData.getTotalLeavesNum();
     }, err => {
         ctx.throw(500, 'UnknowError');
         console.log(err);
@@ -25,14 +25,13 @@ router.post('/reviews/list', async (ctx, next) => {
         ctx.throw(500, 'UnknowError');
     })
 })
-// 通过文章id获取评论列表
-router.get('/reviews/articles/:articlesId', async (ctx, next) => {
-    let articlesId = ctx.params.articlesId;
+// 获取留言列表
+router.get('/leaves', async (ctx, next) => {
     let headers = ctx.request.headers;
     let data;
-    await reviewsData.getReviewsListByArticleId(articlesId, headers.offset, headers.size).then(res => {
+    await leavesData.getLeavesList(headers.offset, headers.size).then(res => {
         data = res;
-        return reviewsData.getTotalReviewsNumByArticleId(articlesId);
+        return leavesData.getTotalLeavesNum();
     }, err => {
         ctx.throw(500, 'UnknowError');
         console.log(err);
@@ -49,10 +48,10 @@ router.get('/reviews/articles/:articlesId', async (ctx, next) => {
         ctx.throw(500, 'UnknowError');
     })
 })
-// 发表评论
-router.post('/reviews', async (ctx, next) => {
+// 发表留言
+router.post('/leaves', async (ctx, next) => {
     let info = ctx.request.body;
-    await reviewsData.addReviews(info).then(res => {
+    await leavesData.addLeaves(info).then(res => {
         ctx.body = {
             id: res['insertId']
         }
@@ -60,10 +59,10 @@ router.post('/reviews', async (ctx, next) => {
         ctx.throw(500, 'UnknowError');
     })
 })
-// 删除评论
-router.delete('/reviews/:id', async (ctx, next) => {
+// 删除留言
+router.delete('/leaves/:id', async (ctx, next) => {
     let id = ctx.params.id;
-    await reviewsData.deleteReviews(id).then(res => {
+    await leavesData.deleteLeaves(id).then(res => {
         if (res['changedRows'] === 1) {
             ctx.body = {
                 message: 'OK'

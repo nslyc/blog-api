@@ -4,6 +4,7 @@ module.exports = {
     articles: require('./articles'),
     images: require('./images'),
     reviews: require('./reviews'),
+    leaves: require('./leaves'),
     articlesCategories: require('./articles-categories'),
     imagesCategories: require('./images-categories'),
 }

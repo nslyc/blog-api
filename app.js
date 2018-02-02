@@ -41,6 +41,7 @@ app.use(routes.upload.routes(), routes.upload.allowedMethods())
 app.use(routes.articles.routes(), routes.articles.allowedMethods())
 app.use(routes.images.routes(), routes.images.allowedMethods())
 app.use(routes.reviews.routes(), routes.reviews.allowedMethods())
+app.use(routes.leaves.routes(), routes.leaves.allowedMethods())
 app.use(routes.articlesCategories.routes(), routes.articlesCategories.allowedMethods())
 app.use(routes.imagesCategories.routes(), routes.imagesCategories.allowedMethods())
 
