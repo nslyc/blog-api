@@ -1,8 +1,12 @@
 const multer = require('koa-multer'); //加载koa-multer模块  
 const router = require('koa-router')()
 const fs = require('fs')
+const UUID = require('uuid-js');
+
 const imagesData = require('../sql/images-data')
 router.prefix('/api')
+
+var uuid4 = UUID.create();
 
 //配置  
 var storage = multer.diskStorage({
@@ -13,7 +17,7 @@ var storage = multer.diskStorage({
     //修改文件名称  
     filename: function (req, file, cb) {
         var fileFormat = (file.originalname).split(".");
-        cb(null, Date.now() + "." + fileFormat[fileFormat.length - 1]);
+        cb(null, uuid4.toString() + "." + fileFormat[fileFormat.length - 1]);
     }
 })
 //加载配置  
